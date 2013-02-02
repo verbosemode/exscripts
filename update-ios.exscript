@@ -1,0 +1,164 @@
+{
+  verifyimg = 0
+  chksumok = 0
+  connection.set_prompt(/(?:\]|#|]\?)/)
+  whatif = 0
+}
+
+terminal length 0
+terminal width 80
+
+show version {
+  extract /^System\simage\sfile\sis\s"(.+)"/ as sysimage
+  extract /^Model\snumber\s+:\s(.+)/ as modelno
+}
+
+{if modelno matches /WS-C3560CG-8PC-S/}
+  dir flash: {
+    extract /.+(c3560c405ex-universalk9-mz.150-2.SE.bin)$/ as iosimage
+    extract /^\d+ bytes total \((\d+) bytes free\)/ as freebytes
+
+    if not iosimage matches /c3560c405ex-universalk9-mz.150-2.SE.bin/ and freebytes gt "20000000"
+      if whatif is 1
+        file.write("iosupdate.txt", "$__hostname__ WS-C3560CG-8PC-S - software can be updated")
+      else}
+        copy http://192.168.0.100/ios/c3560c405ex-universalk9-mz.150-2.SE.bin flash:
+        {enter}
+
+        verify /md5 flash:/c3560c405ex-universalk9-mz.150-2.SE.bin
+        {
+          extract /^verify\s\/md5.+=\s([abcdef0-9]+)/ as md5chksum
+
+          if md5chksum is not "1505d2be9d9f8860c486fb09fc7a3633"
+            file.write("iosupdate.txt", "$__hostname__ WS-C3560CG-8PC-S - c3560c405ex-universalk9-mz.150-2.SE.bin - chksum b0rken")
+          else}
+            configure terminal
+            boot system flash:/c3560c405ex-universalk9-mz.150-2.SE.bin
+            exit
+            wr
+            {file.write("iosupdate.txt", "$__hostname__ WS-C3560CG-8PC-S - c3560c405ex-universalk9-mz.150-2.SE.bin - chksum OK")
+          end
+        }
+      {end
+    end
+  }
+{else if modelno matches /WS-C2960-24PC-L/}
+  dir flash: {
+    extract /.+(c2960-lanbasek9-mz.150-2.SE.bin)$/ as iosimage
+    extract /^\d+ bytes total \((\d+) bytes free\)/ as freebytes
+
+    if not iosimage matches /c2960-lanbasek9-mz.150-2.SE.bin/ and freebytes gt "19000000"
+      if whatif is 1
+        file.write("iosupdate.txt", "$__hostname__ $modelno - software can be updated")
+      else}
+        copy http://192.168.0.100/ios/c2960-lanbasek9-mz.150-2.SE.bin flash:
+        {enter}
+
+        verify /md5 flash:/c2960-lanbasek9-mz.150-2.SE.bin
+        {
+          extract /^verify\s\/md5.+=\s([abcdef0-9]+)/ as md5chksum
+
+          if md5chksum is not "d09cf8cea827100396bb4ff77a6b8b5e"
+            file.write("iosupdate.txt", "$__hostname__ $modelno - c2960-lanbasek9-mz.150-2.SE.bin - chksum b0rken")
+          else}
+            configure terminal
+            boot system flash:/c2960-lanbasek9-mz.150-2.SE.bin
+            exit
+            wr
+            {file.write("iosupdate.txt", "$__hostname__ $modelno - c2960-lanbasek9-mz.150-2.SE.bin - chksum OK")
+          end
+        }
+      {end
+    end
+  }
+{else if modelno matches /WS-C2960S-48LPS-L/}
+  dir flash: {
+    extract /.+(c2960s-universalk9-mz.150-2.SE.bin)$/ as iosimage
+    extract /^\d+ bytes total \((\d+) bytes free\)/ as freebytes
+
+    if not iosimage matches /c2960s-universalk9-mz.150-2.SE.bin/ and freebytes gt "20000000"
+      if whatif is 1
+        file.write("iosupdate.txt", "$__hostname__ $modelno - software can be updated")
+      else}
+        copy http://192.168.0.100/ios/c2960s-universalk9-mz.150-2.SE.bin flash:
+        {enter}
+
+        verify /md5 flash:/c2960s-universalk9-mz.150-2.SE.bin
+        {
+          extract /^verify\s\/md5.+=\s([abcdef0-9]+)/ as md5chksum
+
+          if md5chksum is not "422ca94b3c5f84cbe1c905cb70f1baf6"
+            file.write("iosupdate.txt", "$__hostname__ $modelno - c2960s-universalk9-mz.150-2.SE.bin - chksum b0rken")
+          else}
+            configure terminal
+            boot system flash:/c2960s-universalk9-mz.150-2.SE.bin
+            exit
+            wr
+            {file.write("iosupdate.txt", "$__hostname__ $modelno - c2960s-universalk9-mz.150-2.SE.bin - chksum OK")
+          end
+        }
+      {end
+    end
+  }
+{else if modelno matches /IE-3000-8TC-E/}
+  dir flash: {
+    extract /.+(ies-ipservicesk9-mz.150-2.SE.bin)$/ as iosimage
+    extract /^\d+ bytes total \((\d+) bytes free\)/ as freebytes
+
+    if not iosimage matches /ies-ipservicesk9-mz.150-2.SE.bin/ and freebytes gt "20000000"
+      if whatif is 1
+        file.write("iosupdate.txt", "$__hostname__ $modelno - software can be updated")
+      else}
+        copy http://192.168.0.100/ios/ies-ipservicesk9-mz.150-2.SE.bin flash:
+        {enter}
+
+        verify /md5 flash:/ies-ipservicesk9-mz.150-2.SE.bin
+        {
+          extract /^verify\s\/md5.+=\s([abcdef0-9]+)/ as md5chksum
+
+          if md5chksum is not "4cf6842909839be8aac85f92ac49685f"
+            file.write("iosupdate.txt", "$__hostname__ $modelno - ies-ipservicesk9-mz.150-2.SE.bin - chksum b0rken")
+          else}
+            configure terminal
+            boot system flash:/ies-ipservicesk9-mz.150-2.SE.bin
+            exit
+            wr
+            {file.write("iosupdate.txt", "$__hostname__ $modelno - ies-ipservicesk9-mz.150-2.SE.bin - chksum OK")
+          end
+        }
+      {end
+    end
+  }
+{else if modelno matches /WS-C3560-8PC/}
+  dir flash: {
+    extract /.+(c3560-ipbasek9-mz.150-2.SE.bin)$/ as iosimage
+    extract /^\d+ bytes total \((\d+) bytes free\)/ as freebytes
+
+    if not iosimage matches /c3560-ipbasek9-mz.150-2.SE.bin/ and freebytes gt "20000000"
+      if whatif is 1
+        file.write("iosupdate.txt", "$__hostname__ $modelno - software can be updated")
+      else}
+        copy http://192.168.0.100/ios/c3560-ipbasek9-mz.150-2.SE.bin flash:
+        {enter}
+
+        verify /md5 flash:/c3560-ipbasek9-mz.150-2.SE.bin
+        {
+          extract /^verify\s\/md5.+=\s([abcdef0-9]+)/ as md5chksum
+
+          if md5chksum is not "e7d6bb2685f03c063c1d4a6095eb95c6"
+            file.write("iosupdate.txt", "$__hostname__ $modelno - c3560-ipbasek9-mz.150-2.SE.bin - chksum b0rken")
+          else}
+            configure terminal
+            boot system flash:/c3560-ipbasek9-mz.150-2.SE.bin
+            exit
+            wr
+            {file.write("iosupdate.txt", "$__hostname__ $modelno - c3560-ipbasek9-mz.150-2.SE.bin - chksum OK")
+          end
+        }
+      {end
+    end
+  }
+{else}
+  {file.write("iosupdate.txt", "$__hostname__ Not supported: $modelno")}
+{end}
+

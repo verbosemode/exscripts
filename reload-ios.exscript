@@ -1,0 +1,17 @@
+terminal length 0
+show version {
+  extract /^System\simage\sfile\sis\s"(.+)"/ as sysimage
+  extract /^Model\snumber:\s(.+)/ as modelno
+}
+{if modelno matches /WS-C3550*/}
+  dir flash: {
+    extract /.+(c3550.+)$/ as iosimage
+    if not iosimage matches /c3550-ipservicesk9-mz.122-44.SE6/
+      file.write("reload.txt","$hostname: IOS image not found, no reload")
+    else}
+      {connection.set_prompt(/\[confirm\]/)}
+      reload
+      {connection.set_prompt()}
+      {enter}
+    {end}
+{end}
